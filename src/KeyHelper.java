@@ -1,10 +1,5 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
+import java.io.*;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -47,10 +42,70 @@ public class KeyHelper {
             }
         }
 
-
         return usersPublicKeys;
     }
 
+    public static PublicKey getServerPublicKey(){
+        PublicKey serverPK = null;
+        try {
+            FileInputStream fileInputStream = new FileInputStream("./Keys/SERVER/PublicKey.key");
+            ObjectInputStream objectInputStream =  new ObjectInputStream(fileInputStream);
+            serverPK = (PublicKey)objectInputStream.readObject();
+            objectInputStream.close();
+            fileInputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return serverPK;
+    }
+    public static PrivateKey readMyKey(String id){
 
+        PrivateKey privateKey = null;
+        try {
+            FileInputStream fileInputStream = new FileInputStream("./Keys/"+id + "/PrivateKey.key");
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            privateKey = (PrivateKey)objectInputStream.readObject();
+            objectInputStream.close();
+            fileInputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return privateKey;
+
+    }
+
+    public static PublicKey readMyPublicKey(String id){
+
+        PublicKey publicKey = null;
+        try {
+            FileInputStream fileInputStream = new FileInputStream("./Keys/"+id + "/PublicKey.key");
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            publicKey = (PublicKey)objectInputStream.readObject();
+            objectInputStream.close();
+            fileInputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return publicKey;
+
+    }
+
+
+    public static String printKey(Key k) {
+        byte[] b = k.getEncoded();
+        String result = "";
+        for (int i = 0; i < b.length; i++) {
+            result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
+        }
+        return result;
+    }
 
 }

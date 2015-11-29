@@ -6,22 +6,44 @@ import java.security.*;
 
 public class KeyDistributor {
 
+    public static PublicKey serverPublicKey;
     public static void main(String[] args){
         createUserKey("1");
         createUserKey("2");
         createUserKey("3");
 
+
         KeyHelper.readUsersPublicKeys();
+
+        KeyHelper.readMyKey("1");
 
     }
 
     private static void createUserKey(String userName){
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(1024);
+            keyPairGenerator.initialize(4096);
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
             try {
                 saveKeys(keyPair,userName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void createServerKey(){
+        try {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+            keyPairGenerator.initialize(2048);
+            KeyPair keyPair = keyPairGenerator.generateKeyPair();
+            serverPublicKey = keyPair.getPublic();
+            try {
+                saveKeys(keyPair,"SERVER");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -60,7 +82,7 @@ public class KeyDistributor {
 
         fos = new FileOutputStream(file.getAbsolutePath()+"/PrivateKey.key");
         ObjectOutputStream privateKeyObjectStream = new ObjectOutputStream(fos);
-        privateKeyObjectStream.writeObject(keyPair.getPublic());
+        privateKeyObjectStream.writeObject(keyPair.getPrivate());
 
 
         fos.close();
