@@ -8,7 +8,7 @@ public class Client {
     public Client() {
         try {
             serverInterface =(ServerInterface) Naming.lookup("rmi://localhost/Server");
-            serverInterface.printOnServer("Client has connected to the server");
+            serverInterface.printOnServer("Client has connected to the serverr");
 
         } catch (Exception e) {
             e.printStackTrace();
