@@ -14,7 +14,7 @@ public class Server {
             LocateRegistry.createRegistry(1099);
 
             ServerInterface serverInterface = new ServerInterfaceImplementation();
-            Naming.rebind("rmi://localhost/AuctionServer", serverInterface);
+            Naming.rebind("rmi://localhost/Server", serverInterface);
 
             System.out.println("Server Started");
         } catch (RemoteException | MalformedURLException e) {

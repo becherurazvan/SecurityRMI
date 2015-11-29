@@ -7,8 +7,8 @@ public class Client {
 
     public Client() {
         try {
-            serverInterface = (ServerInterfaceImplementation) Naming.lookup("rmi://localhost/AuctionServer");
-
+            serverInterface =(ServerInterface) Naming.lookup("rmi://localhost/Server");
+            serverInterface.printOnServer("Client has connected to the server");
 
         } catch (Exception e) {
             e.printStackTrace();
