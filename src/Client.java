@@ -1,6 +1,7 @@
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SealedObject;
+import javax.crypto.SecretKey;
 import java.math.BigInteger;
 import java.rmi.Naming;
 import java.security.*;
@@ -14,6 +15,7 @@ public class Client {
     private String id;
     private String name;
     private SecureRandom rnd;
+    private SecretKey sessionKey;
 
     private PublicKey serverPublicKey;
 
@@ -41,7 +43,22 @@ public class Client {
             System.out.println(serverChallange.getChallangeAnswer());
             if(serverChallange.getChallangeAnswer().equals(challange)){
                 System.out.println("Server authenitcated succesfully");
-            }
+            }else
+                return;
+
+            sessionKey = serverChallange.getSessionKey();
+
+            Cipher answerEncyrptCipher = Cipher.getInstance(sessionKey.getAlgorithm());
+            answerEncyrptCipher.init(Cipher.ENCRYPT_MODE,sessionKey);
+            SealedObject sealedAnswer = new SealedObject(serverChallange.getChallangeForClient(),answerEncyrptCipher);
+
+            serverInterface.answerChallange(id,sealedAnswer);
+
+
+
+
+
+
 
         } catch (Exception e) {
             e.printStackTrace();

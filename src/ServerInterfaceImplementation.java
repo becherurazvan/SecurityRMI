@@ -64,6 +64,28 @@ public class ServerInterfaceImplementation extends java.rmi.server.UnicastRemote
 
         return response;
     }
+
+    @Override
+    public boolean answerChallange(String id, SealedObject response) throws RemoteException {
+        ServerChallange challange = waitingToSolve.get(id);
+
+        try {
+            Cipher decryptCipher = Cipher.getInstance(challange.getSessionKey().getAlgorithm());
+            decryptCipher.init(Cipher.DECRYPT_MODE,challange.getSessionKey());
+            String answer = (String)response.getObject(decryptCipher);
+            if(answer.equals(challange.getChallangeForClient())){
+                System.out.println("Client's identity confirmed");
+                sessionKeys.put(id,challange.getSessionKey());
+                waitingToSolve.remove(id);
+                return true;
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
 
 
