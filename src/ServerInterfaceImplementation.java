@@ -76,6 +76,9 @@ public class ServerInterfaceImplementation extends java.rmi.server.UnicastRemote
             if(answer.equals(challange.getChallangeForClient())){
                 System.out.println("Client's identity confirmed");
                 sessionKeys.put(id,challange.getSessionKey());
+
+                // TO DO you must handle what happens if a session key for this user already exists
+                // TO DO you must handle what happens if the user is trying to make a request using a session key, in case the session key hasnt been set or maybe has expired
                 waitingToSolve.remove(id);
                 return true;
             }

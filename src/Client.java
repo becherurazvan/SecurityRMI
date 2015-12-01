@@ -22,7 +22,28 @@ public class Client {
     public Client() {
         id = "1";
         init();
+        doTheChallange();
 
+
+
+    }
+
+    public void init(){
+        try {
+            privateKey = KeyHelper.readMyKey(id);
+            serverInterface =(ServerInterface) Naming.lookup("rmi://localhost/Server");
+            serverInterface.printOnServer("Client has connected to the serverr");
+            serverPublicKey = KeyHelper.getServerPublicKey();
+            rnd = new SecureRandom();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+    public void doTheChallange(){
         String challange = new BigInteger(130,rnd).toString(32);
         System.out.println(challange);
 
@@ -63,21 +84,6 @@ public class Client {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-    }
-
-    public void init(){
-        try {
-            privateKey = KeyHelper.readMyKey(id);
-            serverInterface =(ServerInterface) Naming.lookup("rmi://localhost/Server");
-            serverInterface.printOnServer("Client has connected to the serverr");
-            serverPublicKey = KeyHelper.getServerPublicKey();
-            rnd = new SecureRandom();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
     }
     public static void main(String[] args){
         new Client();
